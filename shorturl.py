@@ -2,6 +2,7 @@ import cherrypy
 import sqlite3
 import urllib
 import json
+import mod_wsgi
 from threading import Lock
 
 """
@@ -136,7 +137,7 @@ class ShortUrl(object):
         shorturl = self.id2url(shortid)
         backid = self.url2id(shorturl)
 
-        cherrypy.response.headers['Content-Type'] = 'application/json'
+        cherrypy.response.headers['Content-Type'] = 'text/json'
             
         result = json.dumps({'ShortURL' : "%s/%s" % (
                              cherrypy.request.base, shorturl)})
@@ -146,6 +147,15 @@ class ShortUrl(object):
 
         return result
 
+        
+# Setup WSGI stuff
 
-if __name__ == '__main__':
-    cherrypy.quickstart(ShortUrl(),config='settings.cfg')
+
+if cherrypy.__version__.startswith('3.0') and cherrypy.engine.state == 0:
+    cherrypy.engine.start(blocking=False)
+    atexit.register(cherrypy.engine.stop)
+
+cherrypy.config.update(mod_wsgi.process_group + '.cfg')
+application = cherrypy.Application(ShortUrl(), script_name=None, 
+                config=mod_wsgi.process_group + '.cfg')
+
