@@ -97,7 +97,7 @@ class ShortUrl(object):
         if res is None:
             raise cherrypy.HTTPError(404)
 
-        fullurl = 'http://%s%s' % (
+        fullurl = 'https://%s%s' % (
                  cherrypy.request.app.config['ShortUrls'][str(res[0])],
                  res[1])
 
@@ -111,6 +111,8 @@ class ShortUrl(object):
         url = kwargs['url']
         if url.startswith('http://'):
             url = url[7:]
+        if url.startswith('https://'):
+            url = url[8:]
 
         siteid = None
         for k,v in cherrypy.request.app.config['ShortUrls'].iteritems():
