@@ -115,7 +115,7 @@ class ShortUrl(object):
             url = url[8:]
 
         siteid = None
-        for k,v in cherrypy.request.app.config['ShortUrls'].iteritems():
+        for k,v in cherrypy.request.app.config['ShortUrls'].items():
             if url.startswith(v):
                 siteid = int(k)
                 url = self.sanatize_url(url[len(v):])
