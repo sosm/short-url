@@ -140,6 +140,7 @@ class ShortUrl(object):
         backid = self.url2id(shorturl)
 
         cherrypy.response.headers['Content-Type'] = 'text/json'
+        cherrypy.response.headers["Access-Control-Allow-Origin"] = "*"
             
         result = json.dumps({'ShortURL' : "%s/%s" % (
                              cherrypy.request.base, shorturl)})
